@@ -38,6 +38,7 @@
       justify-content: center;
       background-image: radial-gradient(ellipse at 20% 40%, rgba(155, 109, 255, .05) 0%, transparent 60%),
                         radial-gradient(ellipse at 80% 20%, rgba(212, 168, 67, .03) 0%, transparent 50%);
+      overflow-x: hidden;
     }
 
     #app {
@@ -47,6 +48,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
 
     /* ---- Header ---- */
@@ -583,7 +586,699 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* ============================================================
+       新增：欢迎界面
+       ============================================================ */
+    .welcome-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: radial-gradient(circle at 50% 38%, #1B1433 0%, #0E0B1A 55%, #07050D 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 24px;
+      text-align: center;
+      overflow: hidden;
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .welcome-screen.fade-out {
+      opacity: 0;
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    .welcome-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .welcome-ring {
+      position: absolute;
+      width: min(82vw, 480px);
+      height: min(82vw, 480px);
+      opacity: .16;
+      pointer-events: none;
+      animation: slowSpin 65s linear infinite;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 2;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .welcome-emblem {
+      width: 96px;
+      height: 146px;
+      border-radius: 12px;
+      background: linear-gradient(160deg, #21193B 0%, #110E1E 100%);
+      border: 1.5px solid var(--gold);
+      box-shadow: 0 0 36px rgba(155, 109, 255, .25), 0 0 18px rgba(212, 168, 67, .18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 28px;
+      animation: floatGentle 4.2s ease-in-out infinite;
+    }
+
+    .welcome-emblem::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(212, 168, 67, .35);
+      border-radius: 7px;
+    }
+
+    .welcome-emblem-moon {
+      font-size: 1.1rem;
+      color: var(--gold-l);
+      letter-spacing: 4px;
+      opacity: .85;
+      margin-bottom: 8px;
+    }
+
+    .welcome-emblem-star {
+      font-size: 2.2rem;
+      color: var(--gold);
+      text-shadow: 0 0 16px rgba(212, 168, 67, .55);
+    }
+
+    .welcome-title {
+      font-size: 2rem;
+      letter-spacing: .16em;
+      background: linear-gradient(135deg, #F8E8B5 0%, var(--purple-l) 55%, var(--gold-l) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .welcome-sub {
+      font-size: .92rem;
+      color: var(--text-m);
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+    }
+
+    .welcome-desc {
+      font-size: .8rem;
+      color: var(--text-d);
+      line-height: 1.75;
+      margin-bottom: 34px;
+    }
+
+    .welcome-btn {
+      padding: 13px 40px;
+      font-size: 1rem;
+      letter-spacing: .12em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, .22) 50%, transparent 75%);
+      transform: translateX(-100%);
+      animation: shimmer 3.2s infinite;
+    }
+
+    /* ============================================================
+       新增：选择牌阵 / 自定义数量提示框
+       ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      background: rgba(7, 5, 14, .76);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 400px;
+      background: linear-gradient(170deg, #1B1530 0%, #130F22 100%);
+      border: 1px solid rgba(212, 168, 67, .35);
+      border-radius: 20px;
+      padding: 26px 22px 22px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .65), 0 0 32px rgba(155, 109, 255, .14);
+      transform: translateY(18px) scale(.97);
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .modal-overlay.show .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-head {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-head h2 {
+      font-size: 1.15rem;
+      letter-spacing: .1em;
+      color: var(--gold-l);
+      margin-bottom: 6px;
+    }
+
+    .modal-head p {
+      font-size: .8rem;
+      color: var(--text-m);
+    }
+
+    .modal-spread-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .modal-opt {
+      width: 100%;
+      text-align: left;
+      background: rgba(255, 255, 255, .025);
+      border: 1.5px solid var(--surface2);
+      border-radius: 12px;
+      padding: 11px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: .2s;
+      font-family: inherit;
+      color: var(--text);
+    }
+
+    .modal-opt:hover {
+      border-color: rgba(155, 109, 255, .6);
+      background: rgba(155, 109, 255, .08);
+    }
+
+    .modal-opt.active {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, rgba(155, 109, 255, .18), rgba(212, 168, 67, .12));
+      box-shadow: 0 0 16px rgba(212, 168, 67, .14);
+    }
+
+    .modal-opt-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .modal-opt-name {
+      font-size: .92rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .modal-opt-desc {
+      font-size: .74rem;
+      color: var(--text-d);
+    }
+
+    .modal-opt.active .modal-opt-desc {
+      color: var(--text-m);
+    }
+
+    .modal-opt-badge {
+      font-size: .74rem;
+      color: var(--gold-l);
+      background: rgba(212, 168, 67, .12);
+      padding: 3px 10px;
+      border-radius: 14px;
+      white-space: nowrap;
+    }
+
+    .modal-custom-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(155, 109, 255, .08);
+      border: 1px dashed rgba(155, 109, 255, .4);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+
+    .modal-custom-box .stepper {
+      margin-bottom: 0;
+    }
+
+    .modal-custom-label {
+      font-size: .82rem;
+      color: var(--purple-l);
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .modal-actions .btn-draw {
+      width: 100%;
+    }
+
+    .modal-link-btn {
+      background: none;
+      border: none;
+      color: var(--text-d);
+      font-size: .78rem;
+      cursor: pointer;
+      padding: 6px 10px;
+      font-family: inherit;
+      transition: color .2s;
+    }
+
+    .modal-link-btn:hover {
+      color: var(--text-m);
+    }
+
+    /* ============================================================
+       新增：抽牌时的背景装饰
+       ============================================================ */
+    .draw-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .7s ease;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 18%, rgba(123, 79, 223, .22) 0%, transparent 56%),
+        radial-gradient(ellipse at 18% 82%, rgba(212, 168, 67, .12) 0%, transparent 48%),
+        radial-gradient(ellipse at 85% 75%, rgba(155, 109, 255, .14) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #150F29 0%, #090711 100%);
+    }
+
+    body.is-fan-drawing .draw-backdrop {
+      opacity: 1;
+    }
+
+    .backdrop-circle {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      width: min(92vw, 640px);
+      height: min(92vw, 640px);
+      transform: translate(-50%, -50%);
+      opacity: .22;
+    }
+
+    .backdrop-circle svg {
+      width: 100%;
+      height: 100%;
+      animation: slowSpin 90s linear infinite;
+    }
+
+    .backdrop-circle-inner {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      width: min(62vw, 410px);
+      height: min(62vw, 410px);
+      transform: translate(-50%, -50%);
+      opacity: .16;
+    }
+
+    .backdrop-circle-inner svg {
+      width: 100%;
+      height: 100%;
+      animation: slowSpinRev 60s linear infinite;
+    }
+
+    .backdrop-moons {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 18px;
+      font-size: .78rem;
+      color: var(--gold);
+      opacity: .32;
+      letter-spacing: .2em;
+      white-space: nowrap;
+    }
+
+    .backdrop-corners span {
+      position: fixed;
+      width: 42px;
+      height: 42px;
+      border-color: rgba(212, 168, 67, .24);
+      border-style: solid;
+    }
+
+    .backdrop-corners .c-tl { top: 16px; left: 16px; border-width: 1.5px 0 0 1.5px; }
+    .backdrop-corners .c-tr { top: 16px; right: 16px; border-width: 1.5px 1.5px 0 0; }
+    .backdrop-corners .c-bl { bottom: 16px; left: 16px; border-width: 0 0 1.5px 1.5px; }
+    .backdrop-corners .c-br { bottom: 16px; right: 16px; border-width: 0 1.5px 1.5px 0; }
+
+    .star-dot {
+      position: absolute;
+      border-radius: 50%;
+      background: #FFF6DC;
+      box-shadow: 0 0 6px rgba(237, 204, 123, .8);
+      animation: twinkle var(--dur, 3s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    /* ============================================================
+       新增：扇形可滑动自选抽牌舞台
+       ============================================================ */
+    .fan-stage {
+      position: relative;
+      width: 100vw;
+      max-width: 860px;
+      margin: 4px 0 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+      -webkit-user-select: none;
+      animation: fadeUpIn .45s ease;
+    }
+
+    .fan-status {
+      text-align: center;
+      margin-bottom: 12px;
+      padding: 0 16px;
+    }
+
+    .fan-prompt {
+      font-size: .96rem;
+      color: var(--gold-l);
+      letter-spacing: .06em;
+      margin-bottom: 4px;
+    }
+
+    .fan-sub {
+      font-size: .78rem;
+      color: var(--text-m);
+    }
+
+    /* 已抽卡槽进度指示 */
+    .fan-slots {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 6px 16px 10px;
+    }
+
+    .fan-slot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .fan-slot-card {
+      width: 34px;
+      height: 54px;
+      border-radius: 5px;
+      border: 1.5px dashed rgba(212, 168, 67, .35);
+      background: rgba(22, 18, 38, .55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      color: rgba(212, 168, 67, .35);
+      transition: .35s ease;
+    }
+
+    .fan-slot.current .fan-slot-card {
+      border-style: solid;
+      border-color: var(--purple-l);
+      box-shadow: 0 0 14px rgba(155, 109, 255, .45);
+      color: var(--purple-l);
+      transform: translateY(-2px);
+    }
+
+    .fan-slot.filled .fan-slot-card {
+      border-style: solid;
+      border-color: var(--gold);
+      background: linear-gradient(160deg, #271E45 0%, #151026 100%);
+      color: var(--gold-l);
+      box-shadow: 0 0 14px rgba(212, 168, 67, .35);
+    }
+
+    .fan-slot-lbl {
+      font-size: .66rem;
+      color: var(--text-d);
+      max-width: 56px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .fan-slot.current .fan-slot-lbl {
+      color: var(--gold-l);
+    }
+
+    /* 扇形牌区交互视口 */
+    .fan-viewport {
+      position: relative;
+      width: 100%;
+      height: 295px;
+      overflow: hidden;
+      cursor: grab;
+      touch-action: pan-y;
+    }
+
+    .fan-viewport:active {
+      cursor: grabbing;
+    }
+
+    .fan-track {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .fan-card {
+      position: absolute;
+      left: 50%;
+      top: 70px;
+      width: 84px;
+      height: 140px;
+      margin-left: -42px;
+      transform-origin: center 120%;
+      pointer-events: auto;
+      cursor: pointer;
+      will-change: transform, opacity;
+    }
+
+    .fan-card-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 9px;
+      background: linear-gradient(160deg, #231B3E 0%, #120E20 100%);
+      border: 1.5px solid var(--gold-d);
+      box-shadow: -4px 6px 16px rgba(0, 0, 0, .55);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .22s cubic-bezier(.2, .8, .2, 1), border-color .22s, box-shadow .22s, opacity .35s;
+      overflow: hidden;
+    }
+
+    .fan-card-body::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(212, 168, 67, .28);
+      border-radius: 5px;
+      background:
+        repeating-linear-gradient(45deg, transparent, transparent 9px, rgba(155, 109, 255, .06) 9px, rgba(155, 109, 255, .06) 10px),
+        repeating-linear-gradient(-45deg, transparent, transparent 9px, rgba(155, 109, 255, .06) 9px, rgba(155, 109, 255, .06) 10px);
+    }
+
+    .fan-card-body::after {
+      content: '✦';
+      color: var(--gold);
+      font-size: 1.2rem;
+      opacity: .72;
+      z-index: 1;
+      text-shadow: 0 0 10px rgba(212, 168, 67, .4);
+    }
+
+    .fan-card.is-center .fan-card-body {
+      border-color: rgba(212, 168, 67, .85);
+      transform: translateY(-8px);
+      box-shadow: 0 8px 24px rgba(155, 109, 255, .28), 0 0 12px rgba(212, 168, 67, .2);
+    }
+
+    @media (hover: hover) {
+      .fan-card:hover .fan-card-body {
+        transform: translateY(-26px) scale(1.06);
+        border-color: var(--gold-l);
+        box-shadow: 0 14px 30px rgba(155, 109, 255, .42), 0 0 20px rgba(212, 168, 67, .35);
+      }
+    }
+
+    .fan-card.picked {
+      pointer-events: none;
+    }
+
+    .fan-card.picked .fan-card-body {
+      transform: translateY(-120px) scale(.86) !important;
+      opacity: 0;
+    }
+
+    /* 扇形底部滑块与操作控制 */
+    .fan-controls {
+      width: min(90vw, 380px);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: -12px;
+      z-index: 5;
+    }
+
+    .fan-nav-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 168, 67, .4);
+      background: rgba(22, 18, 38, .75);
+      color: var(--gold-l);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .2s;
+      flex-shrink: 0;
+    }
+
+    .fan-nav-btn:hover {
+      background: rgba(155, 109, 255, .22);
+      border-color: var(--gold-l);
+    }
+
+    .fan-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, rgba(155, 109, 255, .25), rgba(212, 168, 67, .5), rgba(155, 109, 255, .25));
+      outline: none;
+      cursor: pointer;
+    }
+
+    .fan-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--gold-l) 20%, var(--gold) 100%);
+      border: 2px solid #1B1530;
+      box-shadow: 0 0 12px rgba(212, 168, 67, .75);
+      cursor: pointer;
+    }
+
+    .fan-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--gold-l) 20%, var(--gold) 100%);
+      border: 2px solid #1B1530;
+      box-shadow: 0 0 12px rgba(212, 168, 67, .75);
+      cursor: pointer;
+    }
+
+    .fan-footer-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .fan-footer-btns .btn {
+      padding: 8px 20px;
+      font-size: .82rem;
+    }
+
+    /* ---- Animations ---- */
+    @keyframes slowSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes slowSpinRev {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes floatGentle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-9px); }
+    }
+
+    @keyframes shimmer {
+      0%, 60% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: .2; transform: scale(.8); }
+      50% { opacity: .95; transform: scale(1.25); }
+    }
+
+    @keyframes fadeUpIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     /* ---- Responsive ---- */
+    @media (max-width: 480px) {
+      .fan-viewport {
+        height: 255px;
+      }
+      .fan-card {
+        width: 72px;
+        height: 120px;
+        margin-left: -36px;
+        top: 62px;
+      }
+      .backdrop-moons {
+        gap: 12px;
+        font-size: .7rem;
+      }
+    }
+
     @media (max-width: 360px) {
       .spread-area[data-count="3"] {
         --cw: 96px;
@@ -604,6 +1299,83 @@
   </style>
 </head>
 <body>
+  <!-- ========== 新增：欢迎界面 ========== -->
+  <div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-stars" id="welcomeStars"></div>
+    <svg class="welcome-ring" viewBox="0 0 400 400" fill="none">
+      <circle cx="200" cy="200" r="190" stroke="#D4A843" stroke-width="1" stroke-dasharray="4 6"/>
+      <circle cx="200" cy="200" r="160" stroke="#9B6DFF" stroke-width="1"/>
+      <polygon points="200,25 352,288 48,288" stroke="#D4A843" stroke-width=".8" opacity=".6"/>
+      <polygon points="200,375 48,112 352,112" stroke="#D4A843" stroke-width=".8" opacity=".6"/>
+      <circle cx="200" cy="200" r="115" stroke="#EDCC7B" stroke-width=".7" stroke-dasharray="2 8"/>
+    </svg>
+
+    <div class="welcome-content">
+      <div class="welcome-emblem">
+        <span class="welcome-emblem-moon">☽ ✧ ☾</span>
+        <span class="welcome-emblem-star">✦</span>
+      </div>
+      <h1 class="welcome-title">今日牌语</h1>
+      <p class="welcome-sub">78 张镜子 · 映照此刻的你</p>
+      <p class="welcome-desc">放慢呼吸，默念你此刻最在意的问题。<br>跟随直觉，从牌扇中亲手拾起属于你的讯息。</p>
+      <button class="btn btn-draw welcome-btn" onclick="enterApp()">开启占卜 ✦</button>
+    </div>
+  </div>
+
+  <!-- ========== 新增：选择牌阵 / 自定义数量提示框 ========== -->
+  <div class="modal-overlay" id="spreadModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>✦ 选择你的牌阵 ✦</h2>
+        <p>请选择预设牌阵，或自定义抽取卡牌数量</p>
+      </div>
+      <div class="modal-spread-list" id="modalSpreadList"></div>
+      <div class="modal-custom-box hidden" id="modalCustomBox">
+        <span class="modal-custom-label">自定义抽取张数（1 - 5 张）</span>
+        <div class="stepper">
+          <button type="button" onclick="adjCount(-1)">−</button>
+          <span id="modalCountDisplay">3</span>
+          <button type="button" onclick="adjCount(1)">+</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-draw" onclick="confirmModalDraw()">开始洗牌 · 抽牌</button>
+        <button class="modal-link-btn" onclick="closeSpreadModal()">先返回调整牌组与正逆位设置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 新增：抽牌时的背景装饰 ========== -->
+  <div class="draw-backdrop" id="drawBackdrop" aria-hidden="true">
+    <div class="welcome-stars" id="drawStars"></div>
+    <div class="backdrop-moons">🌑 🌒 🌓 🌔 🌕 🌖 🌗 🌘</div>
+    <div class="backdrop-corners">
+      <span class="c-tl"></span>
+      <span class="c-tr"></span>
+      <span class="c-bl"></span>
+      <span class="c-br"></span>
+    </div>
+    <div class="backdrop-circle">
+      <svg viewBox="0 0 500 500" fill="none">
+        <circle cx="250" cy="250" r="238" stroke="#D4A843" stroke-width="1" stroke-dasharray="3 7"/>
+        <circle cx="250" cy="250" r="218" stroke="#9B6DFF" stroke-width="1" opacity=".8"/>
+        <circle cx="250" cy="250" r="175" stroke="#D4A843" stroke-width=".8" stroke-dasharray="10 6"/>
+        <polygon points="250,24 446,363 54,363" stroke="#EDCC7B" stroke-width=".9" opacity=".65"/>
+        <polygon points="250,476 54,137 446,137" stroke="#EDCC7B" stroke-width=".9" opacity=".65"/>
+        <line x1="250" y1="12" x2="250" y2="488" stroke="#9B6DFF" stroke-width=".6" opacity=".4"/>
+        <line x1="12" y1="250" x2="488" y2="250" stroke="#9B6DFF" stroke-width=".6" opacity=".4"/>
+      </svg>
+    </div>
+    <div class="backdrop-circle-inner">
+      <svg viewBox="0 0 300 300" fill="none">
+        <circle cx="150" cy="150" r="138" stroke="#B794FF" stroke-width="1" stroke-dasharray="2 8"/>
+        <rect x="52" y="52" width="196" height="196" stroke="#D4A843" stroke-width=".8" opacity=".6"/>
+        <rect x="52" y="52" width="196" height="196" transform="rotate(45 150 150)" stroke="#D4A843" stroke-width=".8" opacity=".6"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ========== 原有主应用（结构与功能保持不变） ========== -->
   <div id="app">
     <div class="hdr">
       <h1>✦ 今日牌语 ✦</h1>
@@ -638,6 +1410,31 @@
       <button class="btn btn-draw" id="drawBtn" onclick="startDraw()">洗牌 · 抽牌</button>
     </div>
 
+    <!-- ========== 新增：扇形可滑动自选抽牌区 ========== -->
+    <div class="fan-stage hidden" id="fanStage">
+      <div class="fan-status">
+        <div class="fan-prompt" id="fanPrompt">请凭直觉挑选第 1 张牌</div>
+        <div class="fan-sub">← 左右滑动牌扇，轻点挑选属于你的牌 →</div>
+      </div>
+
+      <div class="fan-slots" id="fanSlots"></div>
+
+      <div class="fan-viewport" id="fanViewport">
+        <div class="fan-track" id="fanTrack"></div>
+      </div>
+
+      <div class="fan-controls">
+        <button type="button" class="fan-nav-btn" onclick="nudgeFan(-3)" aria-label="向左滑动">‹</button>
+        <input type="range" class="fan-slider" id="fanSlider" min="0" max="77" step="0.05" value="38">
+        <button type="button" class="fan-nav-btn" onclick="nudgeFan(3)" aria-label="向右滑动">›</button>
+      </div>
+
+      <div class="fan-footer-btns">
+        <button type="button" class="btn btn-ghost" onclick="cancelFanDraw()">返回设置</button>
+        <button type="button" class="btn btn-outline" onclick="reshuffleFan()">重新洗牌</button>
+      </div>
+    </div>
+
     <div class="spread-area" id="spreadArea"></div>
 
     <div class="reading" id="reading"></div>
@@ -664,6 +1461,14 @@
       { id: 'choice', name: '选择之路', count: 5, positions: ['现状', '道路 A', '道路 B', 'A 的方向', 'B 的方向'], layout: 'choice' },
       { id: 'custom', name: '自定义', count: 0, positions: [], layout: 'flex' }
     ];
+
+    const SPREAD_HINTS = {
+      single: '抽取 1 张，获取此刻的核心指引',
+      three: '过去 · 现在 · 未来，看清事件脉络',
+      season: '春 · 夏 · 秋 · 冬，洞察阶段流转',
+      choice: '现状与双路推演，辅助做出抉择',
+      custom: '自由设定抽取张数（1 ~ 5 张）'
+    };
 
     /* ========== 牌数据 ========== */
     const MAJOR = [
@@ -760,6 +1565,83 @@
 
     const $ = id => document.getElementById(id);
 
+    /* ========== 星尘装饰生成 ========== */
+    function createStars(containerId, count) {
+      const box = $(containerId);
+      if (!box) return;
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('span');
+        s.className = 'star-dot';
+        const size = (Math.random() * 2.2 + 1).toFixed(1);
+        s.style.cssText = `
+          left:${(Math.random() * 100).toFixed(2)}%;
+          top:${(Math.random() * 100).toFixed(2)}%;
+          width:${size}px;
+          height:${size}px;
+          --dur:${(Math.random() * 3.5 + 2).toFixed(2)}s;
+          --delay:${(Math.random() * 4).toFixed(2)}s;
+        `;
+        frag.appendChild(s);
+      }
+      box.appendChild(frag);
+    }
+
+    /* ========== 欢迎界面 & 牌阵提示框 ========== */
+    function enterApp() {
+      const ws = $('welcomeScreen');
+      ws.classList.add('fade-out');
+      setTimeout(() => {
+        ws.classList.add('hidden');
+        openSpreadModal();
+      }, 450);
+    }
+
+    function initSpreadModal() {
+      const list = $('modalSpreadList');
+      list.innerHTML = '';
+      SPREADS.forEach((s, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'modal-opt' + (i === curSpreadIdx ? ' active' : '');
+        btn.innerHTML = `
+          <div class="modal-opt-left">
+            <span class="modal-opt-name">${s.name}</span>
+            <span class="modal-opt-desc">${SPREAD_HINTS[s.id] || ''}</span>
+          </div>
+          <span class="modal-opt-badge" id="modalBadge-${i}">${s.id === 'custom' ? customCount + ' 张' : s.count + ' 张'}</span>
+        `;
+        btn.onclick = () => pickSpread(i);
+        list.appendChild(btn);
+      });
+      syncModalUI();
+    }
+
+    function syncModalUI() {
+      document.querySelectorAll('.modal-opt').forEach((el, j) => {
+        el.classList.toggle('active', j === curSpreadIdx);
+      });
+      const isCustom = SPREADS[curSpreadIdx].id === 'custom';
+      $('modalCustomBox').classList.toggle('hidden', !isCustom);
+      $('modalCountDisplay').textContent = customCount;
+      const customBadge = $('modalBadge-' + (SPREADS.length - 1));
+      if (customBadge) customBadge.textContent = customCount + ' 张';
+    }
+
+    function openSpreadModal() {
+      syncModalUI();
+      $('spreadModal').classList.add('show');
+    }
+
+    function closeSpreadModal() {
+      $('spreadModal').classList.remove('show');
+    }
+
+    function confirmModalDraw() {
+      closeSpreadModal();
+      setTimeout(() => startDraw(), 200);
+    }
+
     /* ========== 初始化牌阵选择 ========== */
     function initPills() {
       const c = $('spreadPills');
@@ -776,11 +1658,13 @@
       curSpreadIdx = i;
       document.querySelectorAll('.pill').forEach((p, j) => p.classList.toggle('active', j === i));
       $('stepper').classList.toggle('hidden', SPREADS[i].id !== 'custom');
+      syncModalUI();
     }
 
     function adjCount(d) {
       customCount = Math.min(5, Math.max(1, customCount + d));
       $('countDisplay').textContent = customCount;
+      syncModalUI();
     }
 
     /* ========== 牌组筛选 ========== */
@@ -791,7 +1675,37 @@
       return ALL.filter(c => c.type === v);
     }
 
-    /* ========== 抽牌 ========== */
+    /* ========== Fisher-Yates 洗牌 ========== */
+    function shuffleDeck(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    /* ========== 扇形可滑动自选抽牌逻辑 ========== */
+    let fanState = {
+      active: false,
+      spread: null,
+      targetCount: 1,
+      deck: [],
+      cardEls: [],
+      pickedIndices: [],
+      scroll: 0,
+      velocity: 0,
+      openProgress: 0,
+      rafId: null,
+      closing: false,
+      dragging: false,
+      moved: false,
+      startX: 0,
+      lastX: 0,
+      lastTime: 0,
+      pointerDownCardIdx: -1
+    };
+
     function startDraw() {
       const spread = SPREADS[curSpreadIdx];
       const count = spread.id === 'custom' ? customCount : spread.count;
@@ -802,29 +1716,320 @@
         return;
       }
 
-      // 洗牌抽取（不重复）
-      const shuffled = [...deck].sort(() => Math.random() - .5);
+      // 清理原有展示并进入扇形抽牌模式
+      $('settings').classList.add('hidden');
+      $('actTop').classList.add('hidden');
+      $('actBottom').classList.add('hidden');
+      $('contact').classList.remove('visible');
+      $('spreadArea').innerHTML = '';
+      $('reading').innerHTML = '';
+
+      openFanDraw(spread, count, shuffleDeck(deck));
+    }
+
+    function openFanDraw(spread, count, shuffledDeck) {
+      stopFanLoop();
+      phase = 'picking';
+      document.body.classList.add('is-fan-drawing');
+      $('fanStage').classList.remove('hidden');
+
+      fanState.active = true;
+      fanState.spread = spread;
+      fanState.targetCount = count;
+      fanState.deck = shuffledDeck;
+      fanState.pickedIndices = [];
+      fanState.closing = false;
+      fanState.scroll = (shuffledDeck.length - 1) / 2;
+      fanState.velocity = 0;
+      fanState.openProgress = 0;
+
+      // 配置底部滑块
+      const slider = $('fanSlider');
+      slider.min = 0;
+      slider.max = Math.max(0, shuffledDeck.length - 1);
+      slider.value = fanState.scroll;
+
+      // 渲染已抽槽位
+      renderFanSlots();
+      updateFanPrompt();
+
+      // 渲染扇形卡牌 DOM
+      const track = $('fanTrack');
+      track.innerHTML = '';
+      fanState.cardEls = [];
+
+      const frag = document.createDocumentFragment();
+      shuffledDeck.forEach((_, idx) => {
+        const card = document.createElement('div');
+        card.className = 'fan-card';
+        card.dataset.idx = idx;
+        card.innerHTML = '<div class="fan-card-body"></div>';
+        frag.appendChild(card);
+        fanState.cardEls.push(card);
+      });
+      track.appendChild(frag);
+
+      startFanLoop();
+    }
+
+    function renderFanSlots() {
+      const slotsBox = $('fanSlots');
+      slotsBox.innerHTML = '';
+      for (let i = 0; i < fanState.targetCount; i++) {
+        const posName = fanState.spread.id === 'custom'
+          ? `第 ${i + 1} 张`
+          : (fanState.spread.positions[i] || `第 ${i + 1} 张`);
+        const slot = document.createElement('div');
+        slot.className = 'fan-slot' + (i === 0 ? ' current' : '');
+        slot.id = `fanSlot-${i}`;
+        slot.innerHTML = `
+          <div class="fan-slot-card">${i + 1}</div>
+          <span class="fan-slot-lbl">${posName}</span>
+        `;
+        slotsBox.appendChild(slot);
+      }
+    }
+
+    function updateFanPrompt() {
+      const pickedLen = fanState.pickedIndices.length;
+      const total = fanState.targetCount;
+      const promptEl = $('fanPrompt');
+
+      if (pickedLen >= total) {
+        promptEl.textContent = '✦ 选牌完成，正在展开牌阵… ✦';
+      } else {
+        const posName = fanState.spread.id === 'custom'
+          ? `第 ${pickedLen + 1} 张`
+          : (fanState.spread.positions[pickedLen] || '');
+        promptEl.textContent = posName
+          ? `请凭直觉挑选第 ${pickedLen + 1} / ${total} 张 · 【${posName}】`
+          : `请凭直觉挑选你的牌（${pickedLen + 1} / ${total}）`;
+      }
+
+      for (let i = 0; i < total; i++) {
+        const slot = $(`fanSlot-${i}`);
+        if (!slot) continue;
+        slot.classList.toggle('filled', i < pickedLen);
+        slot.classList.toggle('current', i === pickedLen);
+        const cardBox = slot.querySelector('.fan-slot-card');
+        cardBox.textContent = i < pickedLen ? '✦' : String(i + 1);
+      }
+    }
+
+    function pickFanCard(idx) {
+      if (!fanState.active || fanState.closing) return;
+      if (fanState.pickedIndices.includes(idx)) return;
+      if (fanState.pickedIndices.length >= fanState.targetCount) return;
+
+      fanState.pickedIndices.push(idx);
+      const el = fanState.cardEls[idx];
+      if (el) el.classList.add('picked');
+
+      updateFanPrompt();
+
+      if (fanState.pickedIndices.length === fanState.targetCount) {
+        fanState.closing = true;
+        setTimeout(finishFanDraw, 580);
+      }
+    }
+
+    function finishFanDraw() {
+      const spread = fanState.spread;
+      const count = fanState.targetCount;
       const allowRev = $('revToggle').checked;
 
-      drawnCards = shuffled.slice(0, count).map((card, i) => ({
-        card,
+      drawnCards = fanState.pickedIndices.map((deckIdx, i) => ({
+        card: fanState.deck[deckIdx],
         reversed: allowRev && Math.random() < .5,
         flipped: false,
         position: spread.id === 'custom' ? `第 ${i + 1} 张` : (spread.positions[i] || '')
       }));
 
+      stopFanLoop();
+      fanState.active = false;
+      $('fanStage').classList.add('hidden');
+      document.body.classList.remove('is-fan-drawing');
+      $('settings').classList.remove('hidden');
+
       flippedCount = 0;
       phase = 'drawing';
-
-      // UI
-      $('actTop').classList.add('hidden');
-      $('actBottom').classList.add('hidden');
-      $('contact').classList.remove('visible');
-      $('reading').innerHTML = '';
-
       renderSpread(spread, count);
     }
 
+    function cancelFanDraw() {
+      stopFanLoop();
+      fanState.active = false;
+      $('fanStage').classList.add('hidden');
+      document.body.classList.remove('is-fan-drawing');
+      $('settings').classList.remove('hidden');
+      $('actTop').classList.remove('hidden');
+      phase = 'setup';
+    }
+
+    function reshuffleFan() {
+      if (!fanState.active || fanState.closing) return;
+      toast('已重新洗牌');
+      openFanDraw(fanState.spread, fanState.targetCount, shuffleDeck(getDeck()));
+    }
+
+    function nudgeFan(delta) {
+      if (!fanState.active) return;
+      fanState.velocity += delta * 0.22;
+    }
+
+    function startFanLoop() {
+      function tick() {
+        if (!fanState.active) return;
+
+        // 开扇展开过渡
+        if (fanState.openProgress < 1) {
+          fanState.openProgress = Math.min(1, fanState.openProgress + 0.045);
+        }
+
+        const maxScroll = Math.max(0, fanState.deck.length - 1);
+
+        // 惯性滑动与边界回弹
+        if (!fanState.dragging) {
+          fanState.scroll += fanState.velocity;
+          fanState.velocity *= 0.91;
+          if (Math.abs(fanState.velocity) < 0.004) fanState.velocity = 0;
+
+          if (fanState.scroll < 0) {
+            fanState.scroll += (0 - fanState.scroll) * 0.2;
+            fanState.velocity *= 0.5;
+          } else if (fanState.scroll > maxScroll) {
+            fanState.scroll += (maxScroll - fanState.scroll) * 0.2;
+            fanState.velocity *= 0.5;
+          }
+        }
+
+        // 同步滑块位置
+        const slider = $('fanSlider');
+        if (document.activeElement !== slider) {
+          slider.value = Math.min(maxScroll, Math.max(0, fanState.scroll));
+        }
+
+        layoutFanCards();
+        fanState.rafId = requestAnimationFrame(tick);
+      }
+      fanState.rafId = requestAnimationFrame(tick);
+    }
+
+    function stopFanLoop() {
+      if (fanState.rafId) {
+        cancelAnimationFrame(fanState.rafId);
+        fanState.rafId = null;
+      }
+    }
+
+    function layoutFanCards() {
+      const isMobile = window.innerWidth <= 480;
+      const radius = isMobile ? 330 : 480;
+      const angleStep = isMobile ? 6.2 : 5.3;
+      const easeOpen = 1 - Math.pow(1 - fanState.openProgress, 3);
+      const centerIdx = Math.round(fanState.scroll);
+
+      const els = fanState.cardEls;
+      for (let i = 0; i < els.length; i++) {
+        const el = els[i];
+        const diff = i - fanState.scroll;
+
+        // 仅渲染可视范围内的牌，保证 78 张牌 60fps 流畅滑动
+        if (Math.abs(diff) > 14) {
+          if (el.style.display !== 'none') el.style.display = 'none';
+          continue;
+        }
+        if (el.style.display === 'none') el.style.display = '';
+
+        const angle = diff * angleStep * easeOpen;
+        const rad = angle * Math.PI / 180;
+        const x = Math.sin(rad) * radius;
+        const y = (1 - Math.cos(rad)) * radius;
+
+        // 边缘平滑淡入淡出
+        const edgeFade = Math.abs(diff) > 10 ? Math.max(0, 1 - (Math.abs(diff) - 10) / 4) : 1;
+
+        el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${angle.toFixed(2)}deg)`;
+        el.style.zIndex = 20 + i;
+        el.style.opacity = edgeFade.toFixed(2);
+        el.classList.toggle('is-center', i === centerIdx);
+      }
+    }
+
+    function bindFanEvents() {
+      const vp = $('fanViewport');
+      const slider = $('fanSlider');
+
+      vp.addEventListener('pointerdown', e => {
+        if (!fanState.active || fanState.closing) return;
+        fanState.dragging = true;
+        fanState.moved = false;
+        fanState.startX = e.clientX;
+        fanState.lastX = e.clientX;
+        fanState.lastTime = performance.now();
+        fanState.velocity = 0;
+
+        const cardEl = e.target.closest('.fan-card');
+        fanState.pointerDownCardIdx = cardEl ? Number(cardEl.dataset.idx) : -1;
+        vp.setPointerCapture(e.pointerId);
+      });
+
+      vp.addEventListener('pointermove', e => {
+        if (!fanState.dragging) return;
+        const dx = e.clientX - fanState.lastX;
+        const totalDx = e.clientX - fanState.startX;
+        if (Math.abs(totalDx) > 7) {
+          fanState.moved = true;
+        }
+
+        const sensitivity = window.innerWidth <= 480 ? 34 : 44;
+        const maxScroll = Math.max(0, fanState.deck.length - 1);
+        let deltaCards = -dx / sensitivity;
+
+        // 超出边界时增加阻尼手感
+        if ((fanState.scroll < 0 && deltaCards < 0) || (fanState.scroll > maxScroll && deltaCards > 0)) {
+          deltaCards *= 0.3;
+        }
+
+        fanState.scroll += deltaCards;
+
+        const now = performance.now();
+        const dt = Math.max(8, now - fanState.lastTime);
+        fanState.velocity = (deltaCards / dt) * 16;
+        fanState.lastX = e.clientX;
+        fanState.lastTime = now;
+      });
+
+      const endDrag = e => {
+        if (!fanState.dragging) return;
+        fanState.dragging = false;
+        try { vp.releasePointerCapture(e.pointerId); } catch (_) {}
+
+        if (!fanState.moved && fanState.pointerDownCardIdx >= 0) {
+          pickFanCard(fanState.pointerDownCardIdx);
+        }
+        fanState.pointerDownCardIdx = -1;
+      };
+
+      vp.addEventListener('pointerup', endDrag);
+      vp.addEventListener('pointercancel', endDrag);
+
+      // 鼠标滚轮滑动牌扇
+      vp.addEventListener('wheel', e => {
+        if (!fanState.active || fanState.closing) return;
+        e.preventDefault();
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        fanState.velocity += (delta > 0 ? 1 : -1) * 0.28;
+      }, { passive: false });
+
+      // 底部滑块控制
+      slider.addEventListener('input', () => {
+        fanState.scroll = parseFloat(slider.value);
+        fanState.velocity = 0;
+      });
+    }
+
+    /* ========== 原有翻牌与解读逻辑（完全保持不变） ========== */
     function renderSpread(spread, count) {
       const area = $('spreadArea');
       area.innerHTML = '';
@@ -918,6 +2123,12 @@
 
     /* ========== 重置 ========== */
     function resetAll() {
+      stopFanLoop();
+      fanState.active = false;
+      $('fanStage').classList.add('hidden');
+      document.body.classList.remove('is-fan-drawing');
+      $('settings').classList.remove('hidden');
+
       phase = 'setup';
       drawnCards = [];
       flippedCount = 0;
@@ -975,7 +2186,11 @@
     }
 
     /* ========== 启动 ========== */
+    createStars('welcomeStars', 42);
+    createStars('drawStars', 50);
     initPills();
+    initSpreadModal();
+    bindFanEvents();
   </script>
 </body>
 </html>
