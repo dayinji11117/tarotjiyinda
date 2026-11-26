@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今日牌语 · 多牌阵塔罗</title>
+  <style>
+    :root {
+      --bg: #0C0A14;
+      --surface: #161226;
+      --surface2: #1E1835;
+      --purple: #9B6DFF;
+      --purple-d: #7B4FDF;
+      --purple-l: #B794FF;
+      --purple-glow: rgba(155, 109, 255, .15);
+      --gold: #D4A843;
+      --gold-l: #EDCC7B;
+      --gold-d: #8A6A28;
+      --text: #EDE8F5;
+      --text-m: #A099B0;
+      --text-d: #6B627F;
+      --cw: 180px;
+      --ch: 300px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      background-image: radial-gradient(ellipse at 20% 40%, rgba(155, 109, 255, .05) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(212, 168, 67, .03) 0%, transparent 50%);
+    }
+
+    #app {
+      width: 100%;
+      max-width: 440px;
+      padding: 36px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ---- Header ---- */
+    .hdr {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .hdr h1 {
+      font-size: 1.6rem;
+      letter-spacing: .1em;
+      background: linear-gradient(135deg, var(--purple-l), var(--gold-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hdr p {
+      font-size: .85rem;
+      color: var(--text-d);
+      margin-top: 4px;
+    }
+
+    /* ---- Settings ---- */
+    .settings {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .s-label {
+      font-size: .75rem;
+      color: var(--text-d);
+      margin-bottom: 6px;
+      letter-spacing: .06em;
+    }
+
+    .pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .pill {
+      border: 1.5px solid var(--surface2);
+      background: var(--surface);
+      color: var(--text-m);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: .82rem;
+      cursor: pointer;
+      transition: .2s;
+      font-family: inherit;
+    }
+
+    .pill:hover {
+      border-color: var(--purple);
+      color: var(--text);
+    }
+
+    .pill.active {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #fff;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    select {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--surface2);
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: .85rem;
+      font-family: inherit;
+      flex: 1;
+      min-width: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23A099B0' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--purple);
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      color: var(--text-m);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .toggle input {
+      accent-color: var(--purple);
+      width: 15px;
+      height: 15px;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stepper button {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--purple);
+      background: transparent;
+      color: var(--purple);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+    }
+
+    .stepper button:hover {
+      background: var(--purple-glow);
+    }
+
+    .stepper span {
+      font-size: 1.1rem;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* ---- Buttons ---- */
+    .btn {
+      border: none;
+      border-radius: 26px;
+      padding: 12px 32px;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+      font-family: inherit;
+    }
+
+    .btn:active {
+      transform: scale(.97);
+    }
+
+    .btn-draw {
+      background: linear-gradient(135deg, var(--purple), var(--purple-d));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(155, 109, 255, .3);
+    }
+
+    .btn-draw:hover {
+      box-shadow: 0 4px 28px rgba(155, 109, 255, .45);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--purple-l);
+      border: 1.5px solid var(--purple);
+    }
+
+    .btn-outline:hover {
+      background: var(--purple-glow);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-m);
+      border: 1.5px solid var(--surface2);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, .03);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ---- Spread Area ---- */
+    .spread-area {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: 20px 0;
+      min-height: 60px;
+    }
+
+    .spread-area[data-count="1"] {
+      --cw: 180px;
+      --ch: 300px;
+    }
+
+    .spread-area[data-count="2"] {
+      --cw: 148px;
+      --ch: 247px;
+    }
+
+    .spread-area[data-count="3"] {
+      --cw: 108px;
+      --ch: 180px;
+    }
+
+    .spread-area[data-count="4"] {
+      --cw: 130px;
+      --ch: 217px;
+    }
+
+    .spread-area[data-count="5"] {
+      --cw: 106px;
+      --ch: 177px;
+    }
+
+    /* Choice spread special grid */
+    .spread-area.layout-choice {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      justify-items: center;
+    }
+
+    .spread-area.layout-choice .sc:nth-child(1) {
+      grid-column: 1 / -1;
+    }
+
+    /* Season spread 2x2 */
+    .spread-area.layout-season {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      justify-items: center;
+    }
+
+    /* ---- Spread Card ---- */
+    .sc {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .4s, transform .4s;
+    }
+
+    .sc.enter {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sc-label {
+      font-size: .7rem;
+      color: var(--gold);
+      letter-spacing: .08em;
+      min-height: 1em;
+    }
+
+    .sc-stage {
+      width: var(--cw);
+      height: var(--ch);
+      perspective: 800px;
+      cursor: pointer;
+    }
+
+    .sc-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .6s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .sc-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .sc-front,
+    .sc-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* Card back (face-down, visible initially) */
+    .sc-front {
+      background: linear-gradient(160deg, #1C1730 0%, #12101E 100%);
+      border: 2px solid var(--gold-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sc-front::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(212, 168, 67, .2);
+      border-radius: 6px;
+      background: repeating-linear-gradient(45deg, transparent, transparent 12px, rgba(155, 109, 255, .04) 12px, rgba(155, 109, 255, .04) 13px),
+                  repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(155, 109, 255, .04) 12px, rgba(155, 109, 255, .04) 13px);
+    }
+
+    .sc-front-sym {
+      color: var(--gold);
+      font-size: 1.6rem;
+      opacity: .6;
+      z-index: 1;
+    }
+
+    .sc-front:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 16px rgba(212, 168, 67, .15);
+    }
+
+    .sc-inner.flipped .sc-front {
+      pointer-events: none;
+    }
+
+    /* Card face (revealed) */
+    .sc-back {
+      transform: rotateY(180deg);
+      background: var(--surface);
+      border: 2px solid var(--gold-d);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .sc-back img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .sc-back.reversed img {
+      transform: rotate(180deg);
+    }
+
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--gold-l);
+      text-align: center;
+      height: 100%;
+    }
+
+    .placeholder .ph-num {
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--gold);
+    }
+
+    .placeholder .ph-sym {
+      font-size: 1.2rem;
+      opacity: .5;
+    }
+
+    .placeholder .ph-cn {
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    .placeholder .ph-en {
+      font-size: .65rem;
+      opacity: .4;
+    }
+
+    .placeholder.reversed .ph-num,
+    .placeholder.reversed .ph-sym {
+      transform: rotate(180deg);
+    }
+
+    /* Glow pulse on unflipped card */
+    .sc:not(.done) .sc-stage:hover .sc-front {
+      box-shadow: 0 0 24px rgba(155, 109, 255, .2);
+    }
+
+    /* ---- Reading Info ---- */
+    .reading {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .r-card {
+      background: var(--surface);
+      border: 1px solid rgba(155, 109, 255, .1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .4s, transform .4s;
+    }
+
+    .r-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .r-pos {
+      font-size: .7rem;
+      color: var(--gold);
+      letter-spacing: .06em;
+      margin-bottom: 4px;
+    }
+
+    .r-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .r-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .r-en {
+      font-size: .75rem;
+      color: var(--text-d);
+    }
+
+    .r-orient {
+      font-size: .7rem;
+      padding: 1px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .r-orient.upright {
+      background: rgba(155, 109, 255, .12);
+      color: var(--purple-l);
+    }
+
+    .r-orient.rev {
+      background: rgba(212, 168, 67, .12);
+      color: var(--gold);
+    }
+
+    .r-keys {
+      font-size: .85rem;
+      color: var(--text-m);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* ---- Contact ---- */
+    .contact {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, .04);
+      margin-top: 8px;
+      width: 100%;
+      opacity: 0;
+      transition: opacity .5s;
+    }
+
+    .contact.visible {
+      opacity: 1;
+    }
+
+    .contact p {
+      font-size: .82rem;
+      color: var(--text-d);
+      margin-bottom: 4px;
+    }
+
+    .contact a {
+      color: var(--purple-l);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .88rem;
+    }
+
+    .contact a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--surface2);
+      color: var(--text);
+      padding: 10px 24px;
+      border-radius: 22px;
+      font-size: .82rem;
+      opacity: 0;
+      transition: .3s;
+      pointer-events: none;
+      z-index: 999;
+      border: 1px solid rgba(155, 109, 255, .2);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 360px) {
+      .spread-area[data-count="3"] {
+        --cw: 96px;
+        --ch: 160px;
+      }
+      .spread-area[data-count="5"] {
+        --cw: 92px;
+        --ch: 153px;
+      }
+      .pills {
+        gap: 4px;
+      }
+      .pill {
+        padding: 5px 10px;
+        font-size: .78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="hdr">
+      <h1>✦ 今日牌语 ✦</h1>
+      <p>78 张镜子，映照此刻的你</p>
+    </div>
+
+    <div class="settings" id="settings">
+      <div class="s-label">牌阵</div>
+      <div class="pills" id="spreadPills"></div>
+      <div class="stepper hidden" id="stepper">
+        <button onclick="adjCount(-1)">−</button>
+        <span id="countDisplay">3</span>
+        <button onclick="adjCount(1)">+</button>
+        <span style="font-size:.8rem;color:var(--text-d)">张</span>
+      </div>
+
+      <div class="s-label">牌组</div>
+      <div class="row">
+        <select id="deckSel">
+          <option value="all">全部 78 张</option>
+          <option value="major">大阿尔卡纳（22 张）</option>
+          <option value="wands">权杖·火</option>
+          <option value="cups">圣杯·水</option>
+          <option value="swords">宝剑·风</option>
+          <option value="pentacles">星币·土</option>
+        </select>
+        <label class="toggle"><input type="checkbox" id="revToggle" checked> 含逆位</label>
+      </div>
+    </div>
+
+    <div class="actions" id="actTop">
+      <button class="btn btn-draw" id="drawBtn" onclick="startDraw()">洗牌 · 抽牌</button>
+    </div>
+
+    <div class="spread-area" id="spreadArea"></div>
+
+    <div class="reading" id="reading"></div>
+
+    <div class="actions hidden" id="actBottom">
+      <button class="btn btn-outline" onclick="resetAll()">重新抽牌</button>
+      <button class="btn btn-ghost" onclick="shareReading()">分享</button>
+    </div>
+
+    <div class="contact" id="contact">
+      <p>想聊更多？</p>
+      <a href="#" target="_blank">联系作者 →</a>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    /* ========== 牌阵定义 ========== */
+    const SPREADS = [
+      { id: 'single', name: '单牌', count: 1, positions: [''], layout: 'flex' },
+      { id: 'three', name: '时间之流', count: 3, positions: ['过去', '现在', '未来'], layout: 'flex' },
+      { id: 'season', name: '四季', count: 4, positions: ['春', '夏', '秋', '冬'], layout: 'season' },
+      { id: 'choice', name: '选择之路', count: 5, positions: ['现状', '道路 A', '道路 B', 'A 的方向', 'B 的方向'], layout: 'choice' },
+      { id: 'custom', name: '自定义', count: 0, positions: [], layout: 'flex' }
+    ];
+
+    /* ========== 牌数据 ========== */
+    const MAJOR = [
+      ['major-00', '愚人', 'The Fool', '新起点，纯真，信仰之跃'],
+      ['major-01', '魔术师', 'The Magician', '意志，创造力，行动'],
+      ['major-02', '女祭司', 'The High Priestess', '直觉，潜意识，内在智慧'],
+      ['major-03', '皇后', 'The Empress', '丰盛，滋养，创造'],
+      ['major-04', '皇帝', 'The Emperor', '秩序，权威，稳定'],
+      ['major-05', '教皇', 'The Hierophant', '传统，信仰，指引'],
+      ['major-06', '恋人', 'The Lovers', '选择，关系，价值观'],
+      ['major-07', '战车', 'The Chariot', '意志力，决心，前进'],
+      ['major-08', '力量', 'Strength', '内在力量，勇气，耐心'],
+      ['major-09', '隐者', 'The Hermit', '内省，独处，寻找答案'],
+      ['major-10', '命运之轮', 'Wheel of Fortune', '转变，周期，机遇'],
+      ['major-11', '正义', 'Justice', '公正，因果，真相'],
+      ['major-12', '倒吊人', 'The Hanged Man', '换个角度，放手，等待'],
+      ['major-13', '死神', 'Death', '结束与重生，转化，放下'],
+      ['major-14', '节制', 'Temperance', '平衡，调和，耐心'],
+      ['major-15', '恶魔', 'The Devil', '束缚，执念，直面阴影'],
+      ['major-16', '塔', 'The Tower', '突然的变化，打破旧有，重建'],
+      ['major-17', '星星', 'The Star', '希望，灵感，宁静'],
+      ['major-18', '月亮', 'The Moon', '迷惑，恐惧，潜意识'],
+      ['major-19', '太阳', 'The Sun', '快乐，成功，光明'],
+      ['major-20', '审判', 'Judgement', '觉醒，重生，自我审视'],
+      ['major-21', '世界', 'The World', '完成，整合，新的循环']
+    ];
+
+    const SUITS = {
+      wands: { cn: '权杖', en: 'Wands', sym: '🜂' },
+      cups: { cn: '圣杯', en: 'Cups', sym: '🜄' },
+      swords: { cn: '宝剑', en: 'Swords', sym: '🜁' },
+      pentacles: { cn: '星币', en: 'Pentacles', sym: '🜃' }
+    };
+
+    const R_CN = ['王牌', '二', '三', '四', '五', '六', '七', '八', '九', '十', '侍从', '骑士', '王后', '国王'];
+    const R_EN = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Page', 'Knight', 'Queen', 'King'];
+    const R_D = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'P', 'Kn', 'Q', 'K'];
+
+    const MK = {
+      wands: [
+        '灵感涌现，新的热情', '规划未来，做出选择', '远见，合作，拓展', '庆祝，安定，和谐',
+        '冲突，竞争，分歧', '胜利，认可，自信', '坚守立场，捍卫信念', '迅速行动，势不可挡',
+        '坚韧，警惕，考验', '重担，责任，硬撑', '探索，热情，新消息', '冲劲，冒险，行动力',
+        '温暖，自信，吸引力', '领导力，远见，魄力'
+      ],
+      cups: [
+        '新的感情，直觉，心的开始', '联结，吸引，伙伴关系', '庆祝，友谊，社交', '冷漠，退缩，重新审视',
+        '失落，遗憾，未看到的拥有', '回忆，童年，纯真', '幻想，太多选择，不切实际', '离开，放下，寻找更深的意义',
+        '满足，愿望成真，享受', '和美，幸福，情感圆满', '好消息，直觉，好奇心', '浪漫，追随内心，邀请',
+        '共情，关怀，情感成熟', '情感智慧，平衡，包容'
+      ],
+      swords: [
+        '真相，清醒，新想法', '僵局，逃避，艰难抉择', '心碎，悲伤，痛苦的真相', '休息，恢复，退一步',
+        '冲突，输赢，自我利益', '过渡，离开，走向平静', '策略，隐藏的计划', '困住自己，限制，受害者心态',
+        '焦虑，噩梦，过度担忧', '终结，最低谷，触底反弹', '好奇，新视角，真话', '果断，锋利，直来直去',
+        '独立，清醒，不被情绪左右', '理性，权威，明确判断'
+      ],
+      pentacles: [
+        '新的机会，物质基础，种子', '平衡，取舍，灵活应对', '团队合作，学习，精进技艺', '安全感，控制，守住不放',
+        '困难，不安，物质匮乏', '给予与接受，慷慨，分享', '耐心等待，长期投入，评估', '专注，匠心，反复练习',
+        '丰收，独立，自给自足', '传承，富足，长久稳定', '学习新技能，脚踏实地', '稳步前进，负责，可靠',
+        '务实，富足，滋养生活', '财务智慧，成就，稳重'
+      ]
+    };
+
+    const ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X',
+      'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'
+    ];
+
+    const ALL = [];
+    MAJOR.forEach(([id, cn, en, keys], i) => ALL.push({ id, cn, en, keys, type: 'major', disp: ROMAN[i], sym: '✦' }));
+
+    for (const [suit, info] of Object.entries(SUITS)) {
+      for (let i = 0; i < 14; i++) {
+        const num = String(i + 1).padStart(2, '0');
+        ALL.push({
+          id: `${suit}-${num}`,
+          cn: `${info.cn}${R_CN[i]}`,
+          en: `${R_EN[i]} of ${info.en}`,
+          keys: MK[suit][i],
+          type: suit,
+          disp: R_D[i],
+          sym: info.sym
+        });
+      }
+    }
+
+    /* ========== 状态 ========== */
+    let curSpreadIdx = 0,
+        customCount = 3,
+        drawnCards = [],
+        flippedCount = 0,
+        phase = 'setup';
+
+    const $ = id => document.getElementById(id);
+
+    /* ========== 初始化牌阵选择 ========== */
+    function initPills() {
+      const c = $('spreadPills');
+      SPREADS.forEach((s, i) => {
+        const b = document.createElement('button');
+        b.className = 'pill' + (i === 0 ? ' active' : '');
+        b.textContent = s.name;
+        b.onclick = () => pickSpread(i);
+        c.appendChild(b);
+      });
+    }
+
+    function pickSpread(i) {
+      curSpreadIdx = i;
+      document.querySelectorAll('.pill').forEach((p, j) => p.classList.toggle('active', j === i));
+      $('stepper').classList.toggle('hidden', SPREADS[i].id !== 'custom');
+    }
+
+    function adjCount(d) {
+      customCount = Math.min(5, Math.max(1, customCount + d));
+      $('countDisplay').textContent = customCount;
+    }
+
+    /* ========== 牌组筛选 ========== */
+    function getDeck() {
+      const v = $('deckSel').value;
+      if (v === 'all') return ALL;
+      if (v === 'major') return ALL.filter(c => c.type === 'major');
+      return ALL.filter(c => c.type === v);
+    }
+
+    /* ========== 抽牌 ========== */
+    function startDraw() {
+      const spread = SPREADS[curSpreadIdx];
+      const count = spread.id === 'custom' ? customCount : spread.count;
+      const deck = getDeck();
+
+      if (deck.length < count) {
+        toast('牌组数量不够，请换一个牌组');
+        return;
+      }
+
+      // 洗牌抽取（不重复）
+      const shuffled = [...deck].sort(() => Math.random() - .5);
+      const allowRev = $('revToggle').checked;
+
+      drawnCards = shuffled.slice(0, count).map((card, i) => ({
+        card,
+        reversed: allowRev && Math.random() < .5,
+        flipped: false,
+        position: spread.id === 'custom' ? `第 ${i + 1} 张` : (spread.positions[i] || '')
+      }));
+
+      flippedCount = 0;
+      phase = 'drawing';
+
+      // UI
+      $('actTop').classList.add('hidden');
+      $('actBottom').classList.add('hidden');
+      $('contact').classList.remove('visible');
+      $('reading').innerHTML = '';
+
+      renderSpread(spread, count);
+    }
+
+    function renderSpread(spread, count) {
+      const area = $('spreadArea');
+      area.innerHTML = '';
+      area.setAttribute('data-count', count);
+      area.className = 'spread-area' +
+        (spread.layout === 'choice' ? ' layout-choice' :
+         spread.layout === 'season' ? ' layout-season' : '');
+
+      drawnCards.forEach((dc, i) => {
+        const el = document.createElement('div');
+        el.className = 'sc';
+        el.innerHTML = `
+          <div class="sc-label">${dc.position}</div>
+          <div class="sc-stage" onclick="flipCard(${i})">
+            <div class="sc-inner">
+              <div class="sc-front"><span class="sc-front-sym">✦</span></div>
+              <div class="sc-back" id="face-${i}"></div>
+            </div>
+          </div>`;
+        area.appendChild(el);
+        setTimeout(() => el.classList.add('enter'), 60 + i * 100);
+      });
+    }
+
+    function flipCard(i) {
+      if (phase !== 'drawing') return;
+      const dc = drawnCards[i];
+      if (dc.flipped) return;
+
+      dc.flipped = true;
+      flippedCount++;
+
+      const inner = document.querySelectorAll('.sc-inner')[i];
+      inner.classList.add('flipped');
+
+      renderFace(i, dc);
+      setTimeout(() => addReadingCard(i, dc), 400);
+
+      if (flippedCount === drawnCards.length) {
+        phase = 'done';
+        setTimeout(() => {
+          $('actBottom').classList.remove('hidden');
+          $('contact').classList.add('visible');
+        }, 600);
+      }
+    }
+
+    function renderFace(i, dc) {
+      const face = $('face-' + i);
+      face.className = 'sc-back' + (dc.reversed ? ' reversed' : '');
+
+      const img = new Image();
+      img.src = `cards/${dc.card.id}.jpg`;
+      img.alt = dc.card.cn;
+
+      img.onload = () => {
+        face.innerHTML = '';
+        face.appendChild(img);
+      };
+
+      img.onerror = () => {
+        const ph = document.createElement('div');
+        ph.className = 'placeholder' + (dc.reversed ? ' reversed' : '');
+        ph.innerHTML = `
+          <span class="ph-num">${dc.card.disp}</span>
+          <span class="ph-sym">${dc.card.sym}</span>
+          <span class="ph-cn">${dc.card.cn}</span>
+          <span class="ph-en">${dc.card.en}</span>`;
+        face.innerHTML = '';
+        face.appendChild(ph);
+      };
+    }
+
+    function addReadingCard(i, dc) {
+      const div = document.createElement('div');
+      div.className = 'r-card';
+      const rev = dc.reversed;
+
+      div.innerHTML = `
+        ${dc.position ? `<div class="r-pos">${dc.position}</div>` : ''}
+        <div class="r-row">
+          <span class="r-name">${dc.card.cn}</span>
+          <span class="r-orient ${rev ? 'rev' : 'upright'}">${rev ? '逆位' : '正位'}</span>
+        </div>
+        <div class="r-en">${dc.card.en}</div>
+        <div class="r-keys">${dc.card.keys}</div>`;
+
+      $('reading').appendChild(div);
+      setTimeout(() => div.classList.add('show'), 30);
+    }
+
+    /* ========== 重置 ========== */
+    function resetAll() {
+      phase = 'setup';
+      drawnCards = [];
+      flippedCount = 0;
+
+      $('spreadArea').innerHTML = '';
+      $('spreadArea').removeAttribute('data-count');
+      $('spreadArea').className = 'spread-area';
+      $('reading').innerHTML = '';
+      $('actTop').classList.remove('hidden');
+      $('actBottom').classList.add('hidden');
+      $('contact').classList.remove('visible');
+    }
+
+    /* ========== 分享 ========== */
+    function shareReading() {
+      const spread = SPREADS[curSpreadIdx];
+      let text = '✦ 今日牌语';
+      if (spread.id !== 'single') text += ' · ' + spread.name;
+      text += ' ✦\n\n';
+
+      drawnCards.forEach(dc => {
+        if (dc.position) text += dc.position + ' → ';
+        text += dc.card.cn + (dc.reversed ? ' （逆位）' : ' （正位）') + '\n';
+        text += dc.card.keys + '\n\n';
+      });
+
+      text += '来抽你的今日牌语 ✦';
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => toast('已复制到剪贴板'))
+          .catch(() => fbCopy(text));
+      } else {
+        fbCopy(text);
+      }
+    }
+
+    function fbCopy(t) {
+      const a = document.createElement('textarea');
+      a.value = t;
+      a.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(a);
+      a.select();
+      document.execCommand('copy');
+      document.body.removeChild(a);
+      toast('已复制到剪贴板');
+    }
+
+    /* ========== Toast ========== */
+    function toast(m) {
+      const t = $('toast');
+      t.textContent = m;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    /* ========== 启动 ========== */
+    initPills();
+  </script>
+</body>
+</html>
