@@ -55,7 +55,11 @@
     /* ---- Header ---- */
     .hdr {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .hdr h1 {
@@ -71,6 +75,33 @@
       font-size: .85rem;
       color: var(--text-d);
       margin-top: 4px;
+    }
+
+    .hdr-tools {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .hdr-tool-btn {
+      background: rgba(22, 18, 38, .85);
+      border: 1px solid rgba(212, 168, 67, .3);
+      color: var(--gold-l);
+      border-radius: 18px;
+      padding: 5px 14px;
+      font-size: .76rem;
+      cursor: pointer;
+      transition: .2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hdr-tool-btn:hover {
+      border-color: var(--gold);
+      background: rgba(212, 168, 67, .12);
     }
 
     /* ---- Settings ---- */
@@ -97,9 +128,9 @@
       border: 1.5px solid var(--surface2);
       background: var(--surface);
       color: var(--text-m);
-      padding: 6px 14px;
+      padding: 6px 13px;
       border-radius: 20px;
-      font-size: .82rem;
+      font-size: .8rem;
       cursor: pointer;
       transition: .2s;
       font-family: inherit;
@@ -199,8 +230,8 @@
     .btn {
       border: none;
       border-radius: 26px;
-      padding: 12px 32px;
-      font-size: .95rem;
+      padding: 12px 26px;
+      font-size: .92rem;
       font-weight: 600;
       cursor: pointer;
       transition: .2s;
@@ -219,6 +250,16 @@
 
     .btn-draw:hover {
       box-shadow: 0 4px 28px rgba(155, 109, 255, .45);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #E2B854, #B68627);
+      color: #161024;
+      box-shadow: 0 4px 18px rgba(212, 168, 67, .28);
+    }
+
+    .btn-gold:hover {
+      box-shadow: 0 4px 24px rgba(212, 168, 67, .45);
     }
 
     .btn-outline {
@@ -289,7 +330,6 @@
       --ch: 177px;
     }
 
-    /* Choice spread special grid */
     .spread-area.layout-choice {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -301,7 +341,6 @@
       grid-column: 1 / -1;
     }
 
-    /* Season spread 2x2 */
     .spread-area.layout-season {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -361,7 +400,6 @@
       overflow: hidden;
     }
 
-    /* Card back (face-down, visible initially) */
     .sc-front {
       background: linear-gradient(160deg, #1C1730 0%, #12101E 100%);
       border: 2px solid var(--gold-d);
@@ -396,7 +434,6 @@
       pointer-events: none;
     }
 
-    /* Card face (revealed) */
     .sc-back {
       transform: rotateY(180deg);
       background: var(--surface);
@@ -405,12 +442,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 10px;
+      padding: 6px;
     }
 
     .sc-back img {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       border-radius: 4px;
     }
@@ -428,6 +465,7 @@
       color: var(--gold-l);
       text-align: center;
       height: 100%;
+      padding: 4px;
     }
 
     .placeholder .ph-num {
@@ -456,7 +494,6 @@
       transform: rotate(180deg);
     }
 
-    /* Glow pulse on unflipped card */
     .sc:not(.done) .sc-stage:hover .sc-front {
       box-shadow: 0 0 24px rgba(155, 109, 255, .2);
     }
@@ -579,6 +616,7 @@
       pointer-events: none;
       z-index: 999;
       border: 1px solid rgba(155, 109, 255, .2);
+      white-space: nowrap;
     }
 
     .toast.show {
@@ -587,7 +625,7 @@
     }
 
     /* ============================================================
-       新增：欢迎界面
+       欢迎界面
        ============================================================ */
     .welcome-screen {
       position: fixed;
@@ -715,19 +753,19 @@
     }
 
     /* ============================================================
-       新增：选择牌阵 / 自定义数量提示框
+       通用弹窗（牌阵选择 / 抽牌记录 / 图片保存预览）
        ============================================================ */
     .modal-overlay {
       position: fixed;
       inset: 0;
       z-index: 250;
-      background: rgba(7, 5, 14, .76);
+      background: rgba(7, 5, 14, .78);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 18px;
       opacity: 0;
       pointer-events: none;
       transition: opacity .35s ease;
@@ -740,11 +778,14 @@
 
     .modal-box {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      max-height: 86dvh;
+      display: flex;
+      flex-direction: column;
       background: linear-gradient(170deg, #1B1530 0%, #130F22 100%);
       border: 1px solid rgba(212, 168, 67, .35);
       border-radius: 20px;
-      padding: 26px 22px 22px;
+      padding: 24px 20px 20px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, .65), 0 0 32px rgba(155, 109, 255, .14);
       transform: translateY(18px) scale(.97);
       transition: transform .35s cubic-bezier(.2, .8, .2, 1);
@@ -756,26 +797,51 @@
 
     .modal-head {
       text-align: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+      position: relative;
+      flex-shrink: 0;
     }
 
     .modal-head h2 {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       letter-spacing: .1em;
       color: var(--gold-l);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .modal-head p {
-      font-size: .8rem;
+      font-size: .78rem;
       color: var(--text-m);
+    }
+
+    .modal-close-x {
+      position: absolute;
+      right: -4px;
+      top: -6px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, .06);
+      color: var(--text-m);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-x:hover {
+      background: rgba(255, 255, 255, .12);
+      color: var(--text);
     }
 
     .modal-spread-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      overflow-y: auto;
     }
 
     .modal-opt {
@@ -844,7 +910,8 @@
       border: 1px dashed rgba(155, 109, 255, .4);
       border-radius: 12px;
       padding: 10px 14px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      flex-shrink: 0;
     }
 
     .modal-custom-box .stepper {
@@ -861,9 +928,11 @@
       flex-direction: column;
       gap: 8px;
       align-items: center;
+      flex-shrink: 0;
     }
 
-    .modal-actions .btn-draw {
+    .modal-actions .btn-draw,
+    .modal-actions .btn-gold {
       width: 100%;
     }
 
@@ -883,7 +952,220 @@
     }
 
     /* ============================================================
-       新增：抽牌时的背景装饰
+       抽牌记录弹窗内容
+       ============================================================ */
+    .history-list {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 2px;
+      margin-bottom: 14px;
+      min-height: 120px;
+    }
+
+    .history-empty {
+      text-align: center;
+      color: var(--text-d);
+      font-size: .84rem;
+      padding: 38px 12px;
+      line-height: 1.8;
+    }
+
+    .h-item {
+      background: rgba(15, 11, 27, .75);
+      border: 1px solid rgba(155, 109, 255, .18);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .h-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    .h-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .h-spread {
+      font-size: .86rem;
+      font-weight: 600;
+      color: var(--gold-l);
+    }
+
+    .h-time {
+      font-size: .72rem;
+      color: var(--text-d);
+    }
+
+    .h-item-btns {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .h-mini-btn {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .09);
+      color: var(--text-m);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: .7rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .h-mini-btn:hover {
+      border-color: var(--purple-l);
+      color: var(--text);
+    }
+
+    .h-mini-btn.del:hover {
+      border-color: #E06C75;
+      color: #F29B9B;
+    }
+
+    .h-cards {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .h-card {
+      flex: 0 0 76px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .h-thumb {
+      width: 68px;
+      height: 112px;
+      border-radius: 7px;
+      background: var(--surface);
+      border: 1.5px solid var(--gold-d);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px;
+    }
+
+    .h-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .h-thumb.reversed img {
+      transform: rotate(180deg);
+    }
+
+    .h-thumb-ph {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      color: var(--gold-l);
+      font-size: .64rem;
+      line-height: 1.2;
+    }
+
+    .h-thumb.reversed .h-thumb-ph .h-ph-sym {
+      transform: rotate(180deg);
+      display: inline-block;
+    }
+
+    .h-cpos {
+      font-size: .64rem;
+      color: var(--gold);
+      max-width: 76px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .h-cname {
+      font-size: .72rem;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .h-corient {
+      font-size: .64rem;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    .h-corient.upright {
+      background: rgba(155, 109, 255, .15);
+      color: var(--purple-l);
+    }
+
+    .h-corient.rev {
+      background: rgba(212, 168, 67, .15);
+      color: var(--gold);
+    }
+
+    .history-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .history-footer .btn {
+      padding: 8px 18px;
+      font-size: .8rem;
+    }
+
+    /* ============================================================
+       保存牌图预览弹窗
+       ============================================================ */
+    .save-preview-wrap {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      background: #0A0713;
+      border: 1px solid rgba(212, 168, 67, .22);
+      padding: 8px;
+    }
+
+    .save-preview-wrap img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .save-tip {
+      font-size: .74rem;
+      color: var(--gold-l);
+      text-align: center;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       抽牌时的背景装饰
        ============================================================ */
     .draw-backdrop {
       position: fixed;
@@ -973,7 +1255,7 @@
     }
 
     /* ============================================================
-       新增：扇形可滑动自选抽牌舞台
+       扇形可滑动自选抽牌舞台
        ============================================================ */
     .fan-stage {
       position: relative;
@@ -1006,7 +1288,6 @@
       color: var(--text-m);
     }
 
-    /* 已抽卡槽进度指示 */
     .fan-slots {
       display: flex;
       gap: 10px;
@@ -1065,7 +1346,6 @@
       color: var(--gold-l);
     }
 
-    /* 扇形牌区交互视口 */
     .fan-viewport {
       position: relative;
       width: 100%;
@@ -1156,7 +1436,6 @@
       opacity: 0;
     }
 
-    /* 扇形底部滑块与操作控制 */
     .fan-controls {
       width: min(90vw, 380px);
       display: flex;
@@ -1293,13 +1572,13 @@
       }
       .pill {
         padding: 5px 10px;
-        font-size: .78rem;
+        font-size: .75rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- ========== 新增：欢迎界面 ========== -->
+  <!-- ========== 欢迎界面 ========== -->
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-stars" id="welcomeStars"></div>
     <svg class="welcome-ring" viewBox="0 0 400 400" fill="none">
@@ -1322,7 +1601,7 @@
     </div>
   </div>
 
-  <!-- ========== 新增：选择牌阵 / 自定义数量提示框 ========== -->
+  <!-- ========== 选择牌阵 / 自定义数量提示框 ========== -->
   <div class="modal-overlay" id="spreadModal">
     <div class="modal-box">
       <div class="modal-head">
@@ -1345,7 +1624,42 @@
     </div>
   </div>
 
-  <!-- ========== 新增：抽牌时的背景装饰 ========== -->
+  <!-- ========== 新增：抽牌记录弹窗 ========== -->
+  <div class="modal-overlay" id="historyModal" onclick="if(event.target===this)closeHistoryModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>✦ 抽牌记录 ✦</h2>
+        <p>每次完成翻牌后会自动保存在本地</p>
+        <button type="button" class="modal-close-x" onclick="closeHistoryModal()" aria-label="关闭">✕</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+      <div class="history-footer">
+        <button type="button" class="btn btn-ghost" onclick="clearHistory()">清空记录</button>
+        <button type="button" class="btn btn-outline" onclick="closeHistoryModal()">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 新增：保存牌图预览弹窗 ========== -->
+  <div class="modal-overlay" id="saveModal" onclick="if(event.target===this)closeSaveModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>✦ 牌阵纪念图已生成 ✦</h2>
+        <p>含本次抽出的牌面、正逆位与时间</p>
+        <button type="button" class="modal-close-x" onclick="closeSaveModal()" aria-label="关闭">✕</button>
+      </div>
+      <div class="save-preview-wrap">
+        <img id="savePreviewImg" alt="抽牌结果图">
+      </div>
+      <div class="save-tip">手机端可直接 <strong>长按上方图片「保存到相册」</strong>，或点击下方按钮保存</div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-gold" onclick="triggerNativeSaveOrDownload()">保存到相册 / 下载图片</button>
+        <button type="button" class="modal-link-btn" onclick="closeSaveModal()">返回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 抽牌时的背景装饰 ========== -->
   <div class="draw-backdrop" id="drawBackdrop" aria-hidden="true">
     <div class="welcome-stars" id="drawStars"></div>
     <div class="backdrop-moons">🌑 🌒 🌓 🌔 🌕 🌖 🌗 🌘</div>
@@ -1375,11 +1689,17 @@
     </div>
   </div>
 
-  <!-- ========== 原有主应用（结构与功能保持不变） ========== -->
+  <!-- ========== 主应用 ========== -->
   <div id="app">
     <div class="hdr">
       <h1>✦ 今日牌语 ✦</h1>
       <p>78 张镜子，映照此刻的你</p>
+      <div class="hdr-tools">
+        <button type="button" class="hdr-tool-btn" onclick="openHistoryModal()">
+          <span>📜</span>
+          <span id="historyBtnText">抽牌记录</span>
+        </button>
+      </div>
     </div>
 
     <div class="settings" id="settings">
@@ -1410,7 +1730,7 @@
       <button class="btn btn-draw" id="drawBtn" onclick="startDraw()">洗牌 · 抽牌</button>
     </div>
 
-    <!-- ========== 新增：扇形可滑动自选抽牌区 ========== -->
+    <!-- 扇形可滑动自选抽牌区 -->
     <div class="fan-stage hidden" id="fanStage">
       <div class="fan-status">
         <div class="fan-prompt" id="fanPrompt">请凭直觉挑选第 1 张牌</div>
@@ -1440,6 +1760,7 @@
     <div class="reading" id="reading"></div>
 
     <div class="actions hidden" id="actBottom">
+      <button class="btn btn-gold" onclick="saveCurrentCardsImage()">保存牌图</button>
       <button class="btn btn-outline" onclick="resetAll()">重新抽牌</button>
       <button class="btn btn-ghost" onclick="shareReading()">分享</button>
     </div>
@@ -1563,7 +1884,70 @@
         flippedCount = 0,
         phase = 'setup';
 
+    const HISTORY_KEY = 'tarot_reading_history_v1';
     const $ = id => document.getElementById(id);
+
+    /* ========== 辅助：牌阵带张数的名称 ========== */
+    function getSpreadDisplayName(spread, customCnt = customCount) {
+      const n = spread.id === 'custom' ? customCnt : spread.count;
+      return `${spread.name}（${n}张）`;
+    }
+
+    function formatDateTime(d = new Date()) {
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    /* ========== 智能图片加载（优先根目录，自动兼容后缀与 cards/ 目录） ========== */
+    const IMG_URL_CACHE = {};
+    let PREFERRED_PATH_RULE = null; // { prefix, ext }
+
+    const PATH_RULES = [
+      { prefix: './', ext: '.jpg' },
+      { prefix: './', ext: '.png' },
+      { prefix: './', ext: '.jpeg' },
+      { prefix: './', ext: '.webp' },
+      { prefix: './', ext: '.JPG' },
+      { prefix: './', ext: '.PNG' },
+      { prefix: './', ext: '.JPEG' },
+      { prefix: 'cards/', ext: '.jpg' },
+      { prefix: 'cards/', ext: '.png' },
+      { prefix: 'cards/', ext: '.jpeg' },
+      { prefix: 'cards/', ext: '.webp' },
+      { prefix: 'cards/', ext: '.JPG' },
+      { prefix: 'cards/', ext: '.PNG' }
+    ];
+
+    function tryLoadOneImage(url) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = url;
+      });
+    }
+
+    async function loadCardImage(cardId) {
+      if (IMG_URL_CACHE[cardId]) {
+        const img = await tryLoadOneImage(IMG_URL_CACHE[cardId]);
+        if (img) return { img, url: IMG_URL_CACHE[cardId] };
+      }
+
+      const rules = PREFERRED_PATH_RULE
+        ? [PREFERRED_PATH_RULE, ...PATH_RULES.filter(r => r.prefix !== PREFERRED_PATH_RULE.prefix || r.ext !== PREFERRED_PATH_RULE.ext)]
+        : PATH_RULES;
+
+      for (const rule of rules) {
+        const url = `${rule.prefix}${cardId}${rule.ext}`;
+        const img = await tryLoadOneImage(url);
+        if (img) {
+          IMG_URL_CACHE[cardId] = url;
+          PREFERRED_PATH_RULE = rule;
+          return { img, url };
+        }
+      }
+      return null;
+    }
 
     /* ========== 星尘装饰生成 ========== */
     function createStars(containerId, count) {
@@ -1606,7 +1990,7 @@
         btn.className = 'modal-opt' + (i === curSpreadIdx ? ' active' : '');
         btn.innerHTML = `
           <div class="modal-opt-left">
-            <span class="modal-opt-name">${s.name}</span>
+            <span class="modal-opt-name" id="modalName-${i}">${getSpreadDisplayName(s)}</span>
             <span class="modal-opt-desc">${SPREAD_HINTS[s.id] || ''}</span>
           </div>
           <span class="modal-opt-badge" id="modalBadge-${i}">${s.id === 'custom' ? customCount + ' 张' : s.count + ' 张'}</span>
@@ -1614,22 +1998,34 @@
         btn.onclick = () => pickSpread(i);
         list.appendChild(btn);
       });
-      syncModalUI();
+      syncSpreadLabels();
     }
 
-    function syncModalUI() {
+    function syncSpreadLabels() {
+      // 同步主页面牌阵按钮文字（包含张数）
+      document.querySelectorAll('#spreadPills .pill').forEach((p, j) => {
+        p.textContent = getSpreadDisplayName(SPREADS[j]);
+        p.classList.toggle('active', j === curSpreadIdx);
+      });
+
+      // 同步弹窗内牌阵文字与高亮
       document.querySelectorAll('.modal-opt').forEach((el, j) => {
         el.classList.toggle('active', j === curSpreadIdx);
+        const nameEl = $('modalName-' + j);
+        if (nameEl) nameEl.textContent = getSpreadDisplayName(SPREADS[j]);
+        const badgeEl = $('modalBadge-' + j);
+        if (badgeEl) {
+          badgeEl.textContent = SPREADS[j].id === 'custom' ? `${customCount} 张` : `${SPREADS[j].count} 张`;
+        }
       });
+
       const isCustom = SPREADS[curSpreadIdx].id === 'custom';
       $('modalCustomBox').classList.toggle('hidden', !isCustom);
       $('modalCountDisplay').textContent = customCount;
-      const customBadge = $('modalBadge-' + (SPREADS.length - 1));
-      if (customBadge) customBadge.textContent = customCount + ' 张';
     }
 
     function openSpreadModal() {
-      syncModalUI();
+      syncSpreadLabels();
       $('spreadModal').classList.add('show');
     }
 
@@ -1648,7 +2044,7 @@
       SPREADS.forEach((s, i) => {
         const b = document.createElement('button');
         b.className = 'pill' + (i === 0 ? ' active' : '');
-        b.textContent = s.name;
+        b.textContent = getSpreadDisplayName(s);
         b.onclick = () => pickSpread(i);
         c.appendChild(b);
       });
@@ -1656,15 +2052,14 @@
 
     function pickSpread(i) {
       curSpreadIdx = i;
-      document.querySelectorAll('.pill').forEach((p, j) => p.classList.toggle('active', j === i));
       $('stepper').classList.toggle('hidden', SPREADS[i].id !== 'custom');
-      syncModalUI();
+      syncSpreadLabels();
     }
 
     function adjCount(d) {
       customCount = Math.min(5, Math.max(1, customCount + d));
       $('countDisplay').textContent = customCount;
-      syncModalUI();
+      syncSpreadLabels();
     }
 
     /* ========== 牌组筛选 ========== */
@@ -1675,7 +2070,6 @@
       return ALL.filter(c => c.type === v);
     }
 
-    /* ========== Fisher-Yates 洗牌 ========== */
     function shuffleDeck(arr) {
       const a = [...arr];
       for (let i = a.length - 1; i > 0; i--) {
@@ -1716,7 +2110,6 @@
         return;
       }
 
-      // 清理原有展示并进入扇形抽牌模式
       $('settings').classList.add('hidden');
       $('actTop').classList.add('hidden');
       $('actBottom').classList.add('hidden');
@@ -1743,17 +2136,14 @@
       fanState.velocity = 0;
       fanState.openProgress = 0;
 
-      // 配置底部滑块
       const slider = $('fanSlider');
       slider.min = 0;
       slider.max = Math.max(0, shuffledDeck.length - 1);
       slider.value = fanState.scroll;
 
-      // 渲染已抽槽位
       renderFanSlots();
       updateFanPrompt();
 
-      // 渲染扇形卡牌 DOM
       const track = $('fanTrack');
       track.innerHTML = '';
       fanState.cardEls = [];
@@ -1881,14 +2271,12 @@
       function tick() {
         if (!fanState.active) return;
 
-        // 开扇展开过渡
         if (fanState.openProgress < 1) {
           fanState.openProgress = Math.min(1, fanState.openProgress + 0.045);
         }
 
         const maxScroll = Math.max(0, fanState.deck.length - 1);
 
-        // 惯性滑动与边界回弹
         if (!fanState.dragging) {
           fanState.scroll += fanState.velocity;
           fanState.velocity *= 0.91;
@@ -1903,7 +2291,6 @@
           }
         }
 
-        // 同步滑块位置
         const slider = $('fanSlider');
         if (document.activeElement !== slider) {
           slider.value = Math.min(maxScroll, Math.max(0, fanState.scroll));
@@ -1934,7 +2321,6 @@
         const el = els[i];
         const diff = i - fanState.scroll;
 
-        // 仅渲染可视范围内的牌，保证 78 张牌 60fps 流畅滑动
         if (Math.abs(diff) > 14) {
           if (el.style.display !== 'none') el.style.display = 'none';
           continue;
@@ -1945,8 +2331,6 @@
         const rad = angle * Math.PI / 180;
         const x = Math.sin(rad) * radius;
         const y = (1 - Math.cos(rad)) * radius;
-
-        // 边缘平滑淡入淡出
         const edgeFade = Math.abs(diff) > 10 ? Math.max(0, 1 - (Math.abs(diff) - 10) / 4) : 1;
 
         el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${angle.toFixed(2)}deg)`;
@@ -1986,7 +2370,6 @@
         const maxScroll = Math.max(0, fanState.deck.length - 1);
         let deltaCards = -dx / sensitivity;
 
-        // 超出边界时增加阻尼手感
         if ((fanState.scroll < 0 && deltaCards < 0) || (fanState.scroll > maxScroll && deltaCards > 0)) {
           deltaCards *= 0.3;
         }
@@ -2014,7 +2397,6 @@
       vp.addEventListener('pointerup', endDrag);
       vp.addEventListener('pointercancel', endDrag);
 
-      // 鼠标滚轮滑动牌扇
       vp.addEventListener('wheel', e => {
         if (!fanState.active || fanState.closing) return;
         e.preventDefault();
@@ -2022,14 +2404,13 @@
         fanState.velocity += (delta > 0 ? 1 : -1) * 0.28;
       }, { passive: false });
 
-      // 底部滑块控制
       slider.addEventListener('input', () => {
         fanState.scroll = parseFloat(slider.value);
         fanState.velocity = 0;
       });
     }
 
-    /* ========== 原有翻牌与解读逻辑（完全保持不变） ========== */
+    /* ========== 翻牌与解读逻辑 ========== */
     function renderSpread(spread, count) {
       const area = $('spreadArea');
       area.innerHTML = '';
@@ -2070,6 +2451,7 @@
 
       if (flippedCount === drawnCards.length) {
         phase = 'done';
+        saveReadingToHistory();
         setTimeout(() => {
           $('actBottom').classList.remove('hidden');
           $('contact').classList.add('visible');
@@ -2081,16 +2463,8 @@
       const face = $('face-' + i);
       face.className = 'sc-back' + (dc.reversed ? ' reversed' : '');
 
-      const img = new Image();
-      img.src = `cards/${dc.card.id}.jpg`;
-      img.alt = dc.card.cn;
-
-      img.onload = () => {
-        face.innerHTML = '';
-        face.appendChild(img);
-      };
-
-      img.onerror = () => {
+      // 先放占位避免翻牌瞬间空白
+      const showPlaceholder = () => {
         const ph = document.createElement('div');
         ph.className = 'placeholder' + (dc.reversed ? ' reversed' : '');
         ph.innerHTML = `
@@ -2101,6 +2475,15 @@
         face.innerHTML = '';
         face.appendChild(ph);
       };
+      showPlaceholder();
+
+      loadCardImage(dc.card.id).then(res => {
+        if (res && res.img) {
+          res.img.alt = dc.card.cn;
+          face.innerHTML = '';
+          face.appendChild(res.img);
+        }
+      });
     }
 
     function addReadingCard(i, dc) {
@@ -2119,6 +2502,455 @@
 
       $('reading').appendChild(div);
       setTimeout(() => div.classList.add('show'), 30);
+    }
+
+    /* ========== 自动保存与查看抽牌记录 ========== */
+    function getHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function setHistory(list) {
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+      } catch (_) {}
+      updateHistoryBtn();
+    }
+
+    function updateHistoryBtn() {
+      const count = getHistory().length;
+      $('historyBtnText').textContent = count > 0 ? `抽牌记录 (${count})` : '抽牌记录';
+    }
+
+    function saveReadingToHistory() {
+      const spread = SPREADS[curSpreadIdx];
+      const count = drawnCards.length;
+      const record = {
+        id: Date.now(),
+        time: formatDateTime(new Date()),
+        spreadId: spread.id,
+        spreadName: getSpreadDisplayName(spread, count),
+        layout: spread.layout,
+        cards: drawnCards.map(dc => ({
+          id: dc.card.id,
+          cn: dc.card.cn,
+          en: dc.card.en,
+          disp: dc.card.disp,
+          sym: dc.card.sym,
+          keys: dc.card.keys,
+          reversed: dc.reversed,
+          position: dc.position
+        }))
+      };
+
+      const list = getHistory();
+      list.unshift(record);
+      if (list.length > 50) list.length = 50;
+      setHistory(list);
+      toast('已自动保存本次抽牌记录 ✦');
+    }
+
+    function openHistoryModal() {
+      renderHistoryList();
+      $('historyModal').classList.add('show');
+    }
+
+    function closeHistoryModal() {
+      $('historyModal').classList.remove('show');
+    }
+
+    function deleteHistoryItem(id) {
+      const list = getHistory().filter(item => item.id !== id);
+      setHistory(list);
+      renderHistoryList();
+    }
+
+    function clearHistory() {
+      if (!getHistory().length) return;
+      if (!confirm('确定要清空所有抽牌记录吗？')) return;
+      setHistory([]);
+      renderHistoryList();
+      toast('已清空抽牌记录');
+    }
+
+    function renderHistoryList() {
+      const box = $('historyList');
+      const list = getHistory();
+
+      if (!list.length) {
+        box.innerHTML = '<div class="history-empty">还没有抽牌记录哦 ✦<br>完成一次抽牌并翻开所有卡牌后，<br>这里会自动记录你的每一次牌语。</div>';
+        return;
+      }
+
+      box.innerHTML = '';
+      list.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'h-item';
+
+        const cardsHtml = item.cards.map((c, idx) => `
+          <div class="h-card">
+            ${c.position ? `<div class="h-cpos">${c.position}</div>` : ''}
+            <div class="h-thumb ${c.reversed ? 'reversed' : ''}" id="hthumb-${item.id}-${idx}">
+              <div class="h-thumb-ph">
+                <span class="h-ph-sym">${c.disp || ''} ${c.sym || '✦'}</span>
+                <span>${c.cn}</span>
+              </div>
+            </div>
+            <div class="h-cname">${c.cn}</div>
+            <span class="h-corient ${c.reversed ? 'rev' : 'upright'}">${c.reversed ? '逆位' : '正位'}</span>
+          </div>
+        `).join('');
+
+        el.innerHTML = `
+          <div class="h-top">
+            <div class="h-meta">
+              <div class="h-spread">${item.spreadName}</div>
+              <div class="h-time">${item.time}</div>
+            </div>
+            <div class="h-item-btns">
+              <button type="button" class="h-mini-btn" onclick="saveHistoryRecordImage(${item.id})">存牌图</button>
+              <button type="button" class="h-mini-btn del" onclick="deleteHistoryItem(${item.id})">删除</button>
+            </div>
+          </div>
+          <div class="h-cards">${cardsHtml}</div>
+        `;
+        box.appendChild(el);
+
+        // 异步加载真实牌面图片到记录缩略图
+        item.cards.forEach((c, idx) => {
+          loadCardImage(c.id).then(res => {
+            const thumb = $(`hthumb-${item.id}-${idx}`);
+            if (thumb && res && res.img) {
+              res.img.alt = c.cn;
+              thumb.innerHTML = '';
+              thumb.appendChild(res.img);
+            }
+          });
+        });
+      });
+    }
+
+    /* ========== 一键生成并保存牌图到相册 ========== */
+    let lastGeneratedBlob = null;
+    let lastGeneratedDataUrl = '';
+    let lastGeneratedFilename = 'tarot-reading.png';
+
+    async function saveCurrentCardsImage() {
+      if (!drawnCards.length) return;
+      const spread = SPREADS[curSpreadIdx];
+      const payload = {
+        spreadName: getSpreadDisplayName(spread, drawnCards.length),
+        layout: spread.layout,
+        time: formatDateTime(new Date()),
+        cards: drawnCards.map(dc => ({
+          id: dc.card.id,
+          cn: dc.card.cn,
+          en: dc.card.en,
+          disp: dc.card.disp,
+          sym: dc.card.sym,
+          keys: dc.card.keys,
+          reversed: dc.reversed,
+          position: dc.position
+        }))
+      };
+      await generateAndOpenSaveModal(payload);
+    }
+
+    async function saveHistoryRecordImage(recordId) {
+      const item = getHistory().find(r => r.id === recordId);
+      if (!item) return;
+      await generateAndOpenSaveModal(item);
+    }
+
+    function drawRoundedRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    async function generateAndOpenSaveModal(record) {
+      toast('正在生成高清牌图…');
+
+      // 并行加载所有牌的真实图片
+      const loadedImgs = await Promise.all(
+        record.cards.map(c => loadCardImage(c.id).then(r => (r ? r.img : null)))
+      );
+
+      const W = 1080;
+      const count = record.cards.length;
+      const padX = 64;
+      const headerH = 215;
+
+      // 计算每张牌的位置坐标
+      let cardW, cardH, slots = [], cardsAreaH = 0;
+
+      if (count === 1) {
+        cardW = 360; cardH = 600;
+        slots.push({ x: (W - cardW) / 2, y: headerH + 36 });
+        cardsAreaH = cardH + 130;
+      } else if (count === 2) {
+        cardW = 330; cardH = 550;
+        const gap = 70;
+        const startX = (W - (cardW * 2 + gap)) / 2;
+        slots.push({ x: startX, y: headerH + 36 });
+        slots.push({ x: startX + cardW + gap, y: headerH + 36 });
+        cardsAreaH = cardH + 130;
+      } else if (count === 3) {
+        cardW = 280; cardH = 466;
+        const gap = 46;
+        const startX = (W - (cardW * 3 + gap * 2)) / 2;
+        for (let i = 0; i < 3; i++) {
+          slots.push({ x: startX + i * (cardW + gap), y: headerH + 36 });
+        }
+        cardsAreaH = cardH + 130;
+      } else if (count === 4) {
+        cardW = 300; cardH = 500;
+        const gapX = 80, gapY = 128;
+        const startX = (W - (cardW * 2 + gapX)) / 2;
+        for (let i = 0; i < 4; i++) {
+          const r = Math.floor(i / 2), c = i % 2;
+          slots.push({ x: startX + c * (cardW + gapX), y: headerH + 36 + r * (cardH + gapY) });
+        }
+        cardsAreaH = cardH * 2 + gapY + 130;
+      } else {
+        cardW = 250; cardH = 416;
+        const gapX = 48, gapY = 118;
+        if (record.layout === 'choice') {
+          const twoX = (W - (cardW * 2 + 120)) / 2;
+          slots.push({ x: (W - cardW) / 2, y: headerH + 32 });
+          slots.push({ x: twoX, y: headerH + 32 + (cardH + gapY) });
+          slots.push({ x: twoX + cardW + 120, y: headerH + 32 + (cardH + gapY) });
+          slots.push({ x: twoX, y: headerH + 32 + 2 * (cardH + gapY) });
+          slots.push({ x: twoX + cardW + 120, y: headerH + 32 + 2 * (cardH + gapY) });
+          cardsAreaH = cardH * 3 + gapY * 2 + 126;
+        } else {
+          const row1X = (W - (cardW * 3 + gapX * 2)) / 2;
+          const row2X = (W - (cardW * 2 + gapX)) / 2;
+          for (let i = 0; i < 3; i++) slots.push({ x: row1X + i * (cardW + gapX), y: headerH + 36 });
+          for (let i = 0; i < 2; i++) slots.push({ x: row2X + i * (cardW + gapX), y: headerH + 36 + cardH + gapY });
+          cardsAreaH = cardH * 2 + gapY + 130;
+        }
+      }
+
+      const summaryStartY = headerH + cardsAreaH + 20;
+      const summaryRowH = 74;
+      const footerH = 96;
+      const H = summaryStartY + count * summaryRowH + footerH;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // 背景渐变
+      const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+      bgGrad.addColorStop(0, '#100B1E');
+      bgGrad.addColorStop(0.5, '#191233');
+      bgGrad.addColorStop(1, '#0C0816');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      // 星空光晕
+      const glow1 = ctx.createRadialGradient(W * 0.5, 220, 20, W * 0.5, 220, 520);
+      glow1.addColorStop(0, 'rgba(155, 109, 255, 0.22)');
+      glow1.addColorStop(1, 'rgba(155, 109, 255, 0)');
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, W, H);
+
+      // 星点
+      for (let i = 0; i < 95; i++) {
+        const sx = (Math.sin(i * 91.7) * 0.5 + 0.5) * W;
+        const sy = (Math.cos(i * 47.3) * 0.5 + 0.5) * H;
+        const sr = (i % 3) * 0.8 + 0.9;
+        ctx.fillStyle = `rgba(237, 204, 123, ${(0.18 + (i % 5) * 0.12).toFixed(2)})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 外边框装饰
+      ctx.strokeStyle = 'rgba(212, 168, 67, 0.38)';
+      ctx.lineWidth = 2;
+      drawRoundedRect(ctx, 28, 28, W - 56, H - 56, 26);
+      ctx.stroke();
+
+      // 标题区
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#EDCC7B';
+      ctx.font = 'bold 46px "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText('✦  今日牌语  ✦', W / 2, 108);
+
+      ctx.fillStyle = '#B794FF';
+      ctx.font = '600 28px "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText(record.spreadName, W / 2, 158);
+
+      ctx.fillStyle = '#8F87A6';
+      ctx.font = '22px "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText(record.time, W / 2, 196);
+
+      // 绘制每一张牌
+      record.cards.forEach((c, i) => {
+        const pos = slots[i];
+        const img = loadedImgs[i];
+
+        // 牌位名称
+        if (c.position) {
+          ctx.fillStyle = '#D4A843';
+          ctx.font = '600 22px "PingFang SC", "Microsoft YaHei", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(c.position, pos.x + cardW / 2, pos.y - 14);
+        }
+
+        // 卡片底座与金边
+        ctx.save();
+        drawRoundedRect(ctx, pos.x, pos.y, cardW, cardH, 16);
+        ctx.fillStyle = '#161226';
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#B88F38';
+        ctx.stroke();
+        ctx.clip();
+
+        if (img) {
+          // 保持完整比例居中绘制（逆位旋转 180°）
+          const pad = 10;
+          const boxW = cardW - pad * 2;
+          const boxH = cardH - pad * 2;
+          const scale = Math.min(boxW / img.naturalWidth, boxH / img.naturalHeight);
+          const drawW = img.naturalWidth * scale;
+          const drawH = img.naturalHeight * scale;
+
+          ctx.save();
+          ctx.translate(pos.x + cardW / 2, pos.y + cardH / 2);
+          if (c.reversed) ctx.rotate(Math.PI);
+          ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+          ctx.restore();
+        } else {
+          // 精美占位牌面
+          ctx.strokeStyle = 'rgba(212, 168, 67, 0.35)';
+          ctx.lineWidth = 1.5;
+          drawRoundedRect(ctx, pos.x + 14, pos.y + 14, cardW - 28, cardH - 28, 10);
+          ctx.stroke();
+
+          ctx.save();
+          ctx.translate(pos.x + cardW / 2, pos.y + cardH * 0.36);
+          if (c.reversed) ctx.rotate(Math.PI);
+          ctx.fillStyle = '#D4A843';
+          ctx.font = '300 44px serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(c.disp || '', 0, 0);
+          ctx.font = '32px serif';
+          ctx.fillText(c.sym || '✦', 0, 48);
+          ctx.restore();
+
+          ctx.fillStyle = '#EDCC7B';
+          ctx.font = 'bold 28px "PingFang SC", "Microsoft YaHei", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(c.cn, pos.x + cardW / 2, pos.y + cardH * 0.67);
+
+          ctx.fillStyle = 'rgba(237, 204, 123, 0.5)';
+          ctx.font = '18px sans-serif';
+          ctx.fillText(c.en || '', pos.x + cardW / 2, pos.y + cardH * 0.74);
+        }
+        ctx.restore();
+
+        // 牌下方名称 + 正逆位
+        const labelY = pos.y + cardH + 34;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#EDE8F5';
+        ctx.font = 'bold 24px "PingFang SC", "Microsoft YaHei", sans-serif';
+        ctx.fillText(`${c.cn} · ${c.reversed ? '逆位' : '正位'}`, pos.x + cardW / 2, labelY);
+      });
+
+      // 分割线
+      ctx.strokeStyle = 'rgba(155, 109, 255, 0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(padX, summaryStartY - 22);
+      ctx.lineTo(W - padX, summaryStartY - 22);
+      ctx.stroke();
+
+      // 关键词摘要区
+      record.cards.forEach((c, i) => {
+        const y = summaryStartY + i * summaryRowH;
+        ctx.textAlign = 'left';
+        const prefix = c.position ? `【${c.position}】` : '';
+        ctx.fillStyle = c.reversed ? '#EDCC7B' : '#B794FF';
+        ctx.font = 'bold 23px "PingFang SC", "Microsoft YaHei", sans-serif';
+        ctx.fillText(`${prefix}${c.cn}（${c.reversed ? '逆位' : '正位'}）`, padX, y + 18);
+
+        ctx.fillStyle = '#A099B0';
+        ctx.font = '21px "PingFang SC", "Microsoft YaHei", sans-serif';
+        ctx.fillText(c.keys || '', padX, y + 48);
+      });
+
+      // 页脚
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(212, 168, 67, 0.65)';
+      ctx.font = '20px "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText('✦  78 张镜子，映照此刻的你  ✦', W / 2, H - 52);
+
+      // 导出图片（处理可能的本地 file:// 跨域限制）
+      try {
+        lastGeneratedDataUrl = canvas.toDataURL('image/png');
+        lastGeneratedFilename = `今日牌语-${record.spreadName}-${Date.now().toString().slice(-4)}.png`;
+        lastGeneratedBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+        $('savePreviewImg').src = lastGeneratedDataUrl;
+        $('saveModal').classList.add('show');
+
+        // 电脑端/支持直接下载的浏览器自动尝试触发一次保存
+        const isMobile = /iPhone|iPad|iPod|Android|MicroMessenger/i.test(navigator.userAgent);
+        if (!isMobile) {
+          downloadGeneratedImage();
+          toast('已自动开始下载牌图 ✦');
+        }
+      } catch (err) {
+        toast('生成图片失败，请通过网页地址访问后重试');
+      }
+    }
+
+    function downloadGeneratedImage() {
+      if (!lastGeneratedDataUrl) return;
+      const a = document.createElement('a');
+      a.href = lastGeneratedDataUrl;
+      a.download = lastGeneratedFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    async function triggerNativeSaveOrDownload() {
+      // 移动端优先调用系统分享面板（iOS 可直接点「存储图像」进入相册）
+      if (lastGeneratedBlob && navigator.share && navigator.canShare) {
+        try {
+          const file = new File([lastGeneratedBlob], lastGeneratedFilename, { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: '今日牌语 · 抽牌结果'
+            });
+            return;
+          }
+        } catch (e) {
+          // 用户取消分享则静默忽略，其他错误走下载降级
+          if (e && e.name === 'AbortError') return;
+        }
+      }
+
+      downloadGeneratedImage();
+      toast('已触发下载，手机端也可长按图片存入相册');
+    }
+
+    function closeSaveModal() {
+      $('saveModal').classList.remove('show');
     }
 
     /* ========== 重置 ========== */
@@ -2146,7 +2978,7 @@
     function shareReading() {
       const spread = SPREADS[curSpreadIdx];
       let text = '✦ 今日牌语';
-      if (spread.id !== 'single') text += ' · ' + spread.name;
+      if (spread.id !== 'single') text += ' · ' + getSpreadDisplayName(spread, drawnCards.length);
       text += ' ✦\n\n';
 
       drawnCards.forEach(dc => {
@@ -2182,7 +3014,7 @@
       const t = $('toast');
       t.textContent = m;
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 1800);
+      setTimeout(() => t.classList.remove('show'), 2000);
     }
 
     /* ========== 启动 ========== */
@@ -2191,6 +3023,7 @@
     initPills();
     initSpreadModal();
     bindFanEvents();
+    updateHistoryBtn();
   </script>
 </body>
 </html>
